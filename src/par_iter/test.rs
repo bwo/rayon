@@ -75,6 +75,49 @@ pub fn map_sum() {
 }
 
 #[test]
+pub fn test_take() {
+    let a: Vec<i32> = (0..1024).collect();
+    let r1: Vec<_> = a.par_iter()
+        .take(10)
+        .collect();
+    let r2: Vec<_> = a.iter().take(10).collect();
+    assert_eq!(r1, r2);
+}
+
+#[test]
+pub fn test_take_too_many() {
+    let a: Vec<i32> = (0..10).collect();
+    let r1: Vec<_> = a.par_iter().take(100).collect();
+    let r2: Vec<_> = a.iter().take(100).collect();
+    assert_eq!(r1, r2);
+}
+
+#[test]
+pub fn test_skip() {
+    let a: Vec<i32> = (0..1024).collect();
+    let r1: Vec<_> = a.par_iter().skip(1000).collect();
+    let r2: Vec<_> = a.iter().skip(1000).collect();
+    assert_eq!(r1, r2);
+}
+
+
+#[test]
+pub fn test_skip_too_many() {
+    let a: Vec<i32> = (0..10).collect();
+    let r1: Vec<_> = a.par_iter().skip(100).collect();
+    let r2: Vec<_> = a.iter().skip(100).collect();
+    assert_eq!(r1, r2);
+}
+
+#[test]
+pub fn test_skip_len() {
+    let a: Vec<i32> = (0..1024).collect();
+    assert_eq!(a.par_iter().skip(500).len(), 524);
+    assert_eq!(a.par_iter().skip(5000).len(), 0);
+}
+
+
+#[test]
 pub fn map_reduce() {
     let a: Vec<i32> = (0..1024).collect();
     let r1 = a.par_iter()
@@ -728,4 +771,3 @@ pub fn par_iter_collect_linked_list_flat_map_filter() {
     let c: LinkedList<i32> = (0_i32..1024).flat_map(|i| (0..i)).filter(|&i| i % 2 == 0).collect();
     assert_eq!(b, c);
 }
-

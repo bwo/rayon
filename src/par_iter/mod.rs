@@ -23,6 +23,8 @@ use self::from_par_iter::FromParallelIterator;
 use self::map::{Map, MapFn, MapCloned, MapInspect};
 use self::reduce::{reduce, ReduceOp, SumOp, ProductOp, MinOp, MaxOp,
                    ReduceWithIdentityOp, SUM, PRODUCT, MIN, MAX};
+use self::skip::Skip;
+use self::take::Take;
 use self::internal::*;
 use self::weight::Weight;
 use self::zip::ZipIter;
@@ -42,6 +44,8 @@ pub mod fold;
 pub mod reduce;
 pub mod slice;
 pub mod slice_mut;
+pub mod skip;
+pub mod take;
 pub mod map;
 pub mod weight;
 pub mod zip;
@@ -646,6 +650,14 @@ pub trait IndexedParallelIterator: ExactParallelIterator {
         Enumerate::new(self)
     }
 
+    fn take(self, n: usize) -> Take<Self> {
+        Take::new(self, n)
+    }
+
+    fn skip(self, n: usize) -> Skip<Self> {
+        Skip::new(self, n)
+    }
+
     /// Searches for **some** item in the parallel iterator that
     /// matches the given predicate, and returns its index.  Like
     /// `ParallelIterator::find_any`, the parallel search will not
@@ -667,4 +679,3 @@ pub trait IndexedParallelIterator: ExactParallelIterator {
         self.position_any(predicate)
     }
 }
-
